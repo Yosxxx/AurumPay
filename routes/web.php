@@ -13,3 +13,7 @@ Route::get('/auth/login', function () {
 Route::get('/auth/signup', function () {
     return view('auth.signup');
 });
+
+Route::get('/dashboard', function () {
+    return view('dashboard.overview');
+});
