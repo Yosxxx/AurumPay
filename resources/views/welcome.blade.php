@@ -12,7 +12,7 @@
 </head>
 <body>
     <main class="min-h-screen flex justify-center items-center">
-        <div class="text-2xl font-light bg-black text-white p-5">If it's background is black and text is white, tailwind is working.</div>
+        <div class="text-2xl font-light bg-card text-white p-5 rounded-xs">If it's background is black and text is white, tailwind is working.</div>
     </main>
 </body>
 </html>
