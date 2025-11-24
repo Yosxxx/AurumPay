@@ -1,6 +1,6 @@
 @php
     $menu = [
-        ['label' => 'Overview', 'icon' => 'home', 'href' => '/overview'],
+        ['label' => 'Overview', 'icon' => 'home', 'href' => '/dashboard'],
         ['label' => 'Transfer', 'icon' => 'paper-airplane', 'href' => '/transfer'],
         ['label' => 'Recipients', 'icon' => 'users', 'href' => '/recipients'],
         ['label' => 'QR Scan', 'icon' => 'qr-code', 'href' => '/qrscan'],
@@ -24,13 +24,13 @@
             @php
                 $isActive = request()->is(ltrim($item['href'], '/'));
                 $activeClass = $isActive
-                    ? 'bg-primary/50 text-primary'
+                    ? 'bg-primary/10 text-primary'
                     : 'text-muted-foreground hover:text-primary';
             @endphp
 
             <x-link
                 href="{{ $item['href'] }}"
-                class="rounded-xs {{ $activeClass }} flex items-center gap-3 px-4 py-2 no-underline transition-colors"
+                class="rounded-md {{ $activeClass }} flex items-center gap-3 px-4 py-2 no-underline transition-colors"
             >
                 <x-dynamic-component :component="'heroicon-o-' . $item['icon']" class="h-5 w-5"/>
                 <span class="text-sm font-medium">{{ $item['label'] }}</span>
