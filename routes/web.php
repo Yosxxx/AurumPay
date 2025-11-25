@@ -33,3 +33,7 @@ Route::get('/dashboard/qrscan', function () {
 
 Route::get('/dashboard/activity', [TransactionController::class, 'index'])
     ->name('activity.index');
+
+Route::get('/dashboard/profile', function () {
+    return view('dashboard.profile');
+});
