@@ -46,18 +46,31 @@
                     </thead>
 
                     @foreach ($transactions as $tx)
-                        <tr class="cursor-pointer border-b border-t border-white/10 transition hover:bg-white/5"
+                        <tr class="group cursor-pointer border-b border-t border-white/10 transition hover:bg-white/5"
                             x-data="" x-on:click="$dispatch('open-transaction', {{ json_encode($tx) }})">
-                            <td class="py-3">{{ $tx['id'] }}</td>
-                            <td class="py-3">{{ $tx['date'] }}</td>
-                            <td class="max-w-xs truncate py-3">{{ $tx['desc'] }}</td>
-                            <td class="{{ $tx['amount'] < 0 ? 'text-red-400' : 'text-green-400' }} py-3 text-right">
+
+                            <td class="text-muted-foreground py-3 group-hover:text-white">
+                                {{ $tx['id'] }}
+                            </td>
+
+                            <td class="text-muted-foreground py-3 group-hover:text-white">
+                                {{ $tx['date'] }}
+                            </td>
+
+                            <td class="text-muted-foreground max-w-xs truncate py-3 group-hover:text-white">
+                                {{ $tx['desc'] }}
+                            </td>
+
+                            <td
+                                class="{{ $tx['amount'] < 0 ? 'text-red-400' : 'text-green-400' }} py-3 text-right group-hover:text-white">
                                 {{ $tx['amount'] < 0 ? '-' : '+' }}${{ number_format(abs($tx['amount']), 2) }}
                             </td>
+
                         </tr>
                     @endforeach
+
                     {{-- Transaction Detail Dialog --}}
-                    <div x-data="{show: false,item: {},}" x-on:open-transaction.window="item = $event.detail;show = true;" x-cloak>
+                    <div x-data="{ show: false, item: {}, }" x-on:open-transaction.window="item = $event.detail;show = true;" x-cloak>
 
                         {{-- Backdrop --}}
                         <div x-show="show" x-transition.opacity class="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
