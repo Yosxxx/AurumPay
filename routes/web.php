@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RecipientController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,3 +22,7 @@ Route::get('/dashboard', function () {
 Route::get('/dashboard/transfer', function () {
     return view('dashboard.transfer');
 });
+
+// FIXED — use controller instead of raw view
+Route::get('/dashboard/recipients', [RecipientController::class, 'index'])
+    ->name('recipients.index');

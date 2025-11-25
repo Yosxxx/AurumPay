@@ -2,11 +2,11 @@
     $menu = [
         ['label' => 'Overview', 'icon' => 'home', 'href' => '/dashboard'],
         ['label' => 'Transfer', 'icon' => 'paper-airplane', 'href' => '/dashboard/transfer'],
-        ['label' => 'Recipients', 'icon' => 'users', 'href' => '/recipients'],
-        ['label' => 'QR Scan', 'icon' => 'qr-code', 'href' => '/qrscan'],
-        ['label' => 'Activity', 'icon' => 'receipt-percent', 'href' => '/activity'],
-        ['label' => 'Notifications', 'icon' => 'bell', 'href' => '/notifications'],
-        ['label' => 'Profile', 'icon' => 'user', 'href' => '/profile'],
+        ['label' => 'Recipients', 'icon' => 'users', 'href' => '/dashboard/recipients'],
+        ['label' => 'QR Scan', 'icon' => 'qr-code', 'href' => '/dashboard/qrscan'],
+        ['label' => 'Activity', 'icon' => 'receipt-percent', 'href' => '/dashboard/activity'],
+        ['label' => 'Notifications', 'icon' => 'bell', 'href' => '/dashboard/notifications'],
+        ['label' => 'Profile', 'icon' => 'user', 'href' => '/dashboard/profile'],
     ];
 @endphp
 
