@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\RecipientController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,3 +30,6 @@ Route::get('/dashboard/recipients', [RecipientController::class, 'index'])
 Route::get('/dashboard/qrscan', function () {
     return view('dashboard.qrscan');
 })->name('dashboard.qrscan');
+
+Route::get('/dashboard/activity', [TransactionController::class, 'index'])
+    ->name('activity.index');
