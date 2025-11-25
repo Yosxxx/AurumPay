@@ -16,9 +16,8 @@ Route::get('/auth/signup', function () {
     return view('auth.signup');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard.overview');
-});
+Route::get('/dashboard', [TransactionController::class, 'overview'])
+    ->name('dashboard.overview');
 
 Route::get('/dashboard/transfer', function () {
     return view('dashboard.transfer');

@@ -7,10 +7,52 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class TransactionController extends Controller
 {
+    // -------------------------------------------------------------------------
+    // Overview Page (/dashboard)
+    // -------------------------------------------------------------------------
+    public function overview()
+    {
+        $transactions = $this->dummyTransactions();
+
+        // Last 5 recent
+        $recent = array_slice(array_reverse($transactions), 0, 5);
+
+        return view('dashboard.overview', [
+            'recent' => $recent,
+        ]);
+    }
+
+    // -------------------------------------------------------------------------
+    // Activity Page (/dashboard/activity)
+    // -------------------------------------------------------------------------
     public function index(Request $request)
     {
-        // ---- RAW 30 DUMMY TRANSFER TRANSACTIONS ----
-        $transactions = [
+        $transactions = $this->dummyTransactions();
+
+        // Pagination
+        $perPage = 10;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $items = array_slice($transactions, ($currentPage - 1) * $perPage, $perPage);
+
+        $paginator = new LengthAwarePaginator(
+            $items,
+            count($transactions),
+            $perPage,
+            $currentPage,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        return view('dashboard.activity', [
+            'transactions' => $paginator,
+        ]);
+    }
+
+    // -------------------------------------------------------------------------
+    // Dummy Data (shared)
+    // -------------------------------------------------------------------------
+    private function dummyTransactions()
+    {
+        return [
             ['id' => 'TX-001', 'date' => 'Oct 01, 2023', 'desc' => 'Transfer Sent to John Doe', 'amount' => -150.0, 'type' => 'transfer', 'notes' => 'Monthly phone bill'],
             ['id' => 'TX-002', 'date' => 'Oct 02, 2023', 'desc' => 'Transfer Received from Sarah Lee', 'amount' => 850.0, 'type' => 'transfer', 'notes' => 'Payment for project collaboration'],
             ['id' => 'TX-003', 'date' => 'Oct 03, 2023', 'desc' => 'Transfer Sent to Kevin Hart', 'amount' => -42.0, 'type' => 'transfer', 'notes' => 'Shared dinner expenses'],
@@ -62,15 +104,5 @@ class TransactionController extends Controller
             ['id' => 'TX-049', 'date' => 'Nov 18, 2023', 'desc' => 'Transfer Received from Kelvin Tai', 'amount' => 380.0, 'type' => 'transfer', 'notes' => 'Shared travel booking'],
             ['id' => 'TX-050', 'date' => 'Nov 19, 2023', 'desc' => 'Withdraw', 'amount' => -120.0, 'type' => 'withdraw', 'notes' => 'Weekend expenses'],
         ];
-
-        // ---- PAGINATION (10 per page) ----
-        $perPage = 10;
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $items = array_slice($transactions, ($currentPage - 1) * $perPage, $perPage);
-        $paginator = new LengthAwarePaginator($items, count($transactions), $perPage, $currentPage, ['path' => $request->url(), 'query' => $request->query()]);
-
-        return view('dashboard.activity', [
-            'transactions' => $paginator,
-        ]);
     }
 }

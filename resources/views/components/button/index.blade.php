@@ -41,7 +41,7 @@ $sizeClass = match ($size) {
 
 <button
     type="{{ $type }}"
-    {{ $attributes->twMerge("btn $variantClass $sizeClass") }}
+    {{ $attributes->twMerge("btn $variantClass $sizeClass hover:cursor-pointer") }}
 >
     {{ $slot }}
 </button>
