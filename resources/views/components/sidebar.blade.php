@@ -1,7 +1,7 @@
 @php
     $menu = [
         ['label' => 'Overview', 'icon' => 'home', 'href' => '/dashboard'],
-        ['label' => 'Transfer', 'icon' => 'paper-airplane', 'href' => '/transfer'],
+        ['label' => 'Transfer', 'icon' => 'paper-airplane', 'href' => '/dashboard/transfer'],
         ['label' => 'Recipients', 'icon' => 'users', 'href' => '/recipients'],
         ['label' => 'QR Scan', 'icon' => 'qr-code', 'href' => '/qrscan'],
         ['label' => 'Activity', 'icon' => 'receipt-percent', 'href' => '/activity'],
