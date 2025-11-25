@@ -23,6 +23,9 @@ Route::get('/dashboard/transfer', function () {
     return view('dashboard.transfer');
 });
 
-// FIXED — use controller instead of raw view
 Route::get('/dashboard/recipients', [RecipientController::class, 'index'])
     ->name('recipients.index');
+
+Route::get('/dashboard/qrscan', function () {
+    return view('dashboard.qrscan');
+})->name('dashboard.qrscan');
