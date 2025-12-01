@@ -9,9 +9,6 @@
             $tab = request('tab', 'scan');
         @endphp
 
-        {{-- ======================
-          TAB BUTTONS (TOP)
-       ====================== --}}
         <div class="flex justify-center space-x-4">
 
             <x-link href="?tab=scan"
@@ -48,13 +45,13 @@
 
             @if ($tab === 'my')
                 <x-card.content class="flex flex-col items-center py-10">
-
-
-
-                    <div class="rounded-xl bg-white p-4">
-                        <img src="/images/sample-qr.png" alt="My QR Code" class="h-52 w-52" />
+                    <div class="bg-white p-4 rounded-xl">
+                        {{-- Generates the Account Number --}}
+                        {!! QrCode::size(200)->generate(auth()->user()->account_number) !!}
                     </div>
-
+                    <div class="mt-4 font-mono font-bold text-lg">
+                        {{ auth()->user()->account_number }}
+                    </div>
                     <div class="mt-4 text-sm text-gray-400">
                         Share this QR to receive money
                     </div>

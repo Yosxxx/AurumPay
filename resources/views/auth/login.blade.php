@@ -12,7 +12,8 @@
 
             <x-card.content>
                 {{-- Form --}}
-                <form action="" class="space-y-5">
+                <form id="login-form" action="{{ route('login.post') }}" method="POST" class="space-y-5">
+                    @csrf
                     <div>
                         <x-label>Email</x-label>
                         <x-input type="email" placeholder="someone@gmail.com"></x-input>
@@ -27,7 +28,7 @@
 
             <x-card.footer class="flex flex-col gap-y-5">
                 {{-- Sign In --}}
-                <x-button class="w-full">Sign In</x-button>
+                <x-button type="submit" form="login-form" class="w-full">Sign In</x-button>
 
                 {{-- Sign Up --}}
                 <x-card.description>Don't have an account? <x-link class="text-primary" href="signup">Sign up</x-link> </x-card.description>

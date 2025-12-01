@@ -12,7 +12,7 @@
 
             <x-card.content>
                 {{-- Form --}}
-                <form method="POST" action="" class="space-y-5">
+                <form id="signup-form" action="{{ route('signup.post') }}" method="POST" class="space-y-5">
                     @csrf
 
                     <div class="flex gap-x-5">
@@ -64,7 +64,7 @@
 
             <x-card.footer class="flex flex-col gap-y-5">
                 {{-- Sign In --}}
-                <x-button class="w-full">Create Account</x-button>
+                <x-button type="submit" form="signup-form" class="w-full">Create Account</x-button>
 
                 {{-- Sign Up --}}
                 <x-card.description>Already have an account? <x-link class="text-primary" href="login">Sign in</x-link>
