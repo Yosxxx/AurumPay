@@ -38,13 +38,17 @@
         @endforeach
     </div>
 
-    {{-- Footer (BOTTOM) --}}
+    {{-- Footer --}}
     <x-card.footer class="mt-auto px-4 py-4 border-t-[0.5px]">
         
-        <x-link href="#" class="text-muted-foreground no-underline transition hover:text-red-500 flex items-center">
-            <x-heroicon-o-arrow-right-start-on-rectangle class="h-5 w-5 mr-2" />
-            Signout
-        </x-link>
+        <form action="{{ route('logout') }}" method="POST" class="w-full">
+            @csrf
+            <button type="submit" class="text-muted-foreground hover:text-red-500 flex items-center w-full transition bg-transparent border-0 cursor-pointer">
+                <x-heroicon-o-arrow-right-start-on-rectangle class="h-5 w-5 mr-2" />
+                Signout
+            </button>
+        </form>
+
     </x-card.footer>
 
 </x-card>

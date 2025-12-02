@@ -8,7 +8,6 @@
         <x-card>
             {{-- Header --}}
             <x-card.header class="flex flex-row items-center justify-between">
-
                 <div>
                     <x-card.title>All Transactions</x-card.title>
                     <x-card.description>
@@ -25,17 +24,14 @@
                                 d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1 0 10.5 18a7.5 7.5 0 0 0 6.15-3.35Z" />
                         </svg>
                     </span>
-
                     <x-input class="pl-10" placeholder="Search..." />
                 </div>
-
             </x-card.header>
 
             {{-- TABLE --}}
             <x-card.content>
 
                 <table class="w-full border-collapse text-left">
-
                     <thead class="border-b border-white/10 text-gray-300">
                         <tr class="border-b border-white/10">
                             <th class="py-3">Transaction ID</th>
@@ -50,20 +46,20 @@
                             x-data="" x-on:click="$dispatch('open-transaction', {{ json_encode($tx) }})">
 
                             <td class="text-muted-foreground py-3 group-hover:text-white">
-                                {{ $tx['id'] }}
+                                #{{ $tx->id }}
                             </td>
 
                             <td class="text-muted-foreground py-3 group-hover:text-white">
-                                {{ $tx['date'] }}
+                                {{ $tx->created_at->format('M d, Y') }}
                             </td>
 
                             <td class="text-muted-foreground max-w-xs truncate py-3 group-hover:text-white">
-                                {{ $tx['desc'] }}
+                                {{ $tx->description }}
                             </td>
 
                             <td
-                                class="{{ $tx['amount'] < 0 ? 'text-red-400' : 'text-green-400' }} py-3 text-right group-hover:text-white">
-                                {{ $tx['amount'] < 0 ? '-' : '+' }}${{ number_format(abs($tx['amount']), 2) }}
+                                class="{{ $tx->amount < 0 ? 'text-red-400' : 'text-green-400' }} py-3 text-right group-hover:text-white">
+                                {{ $tx->amount < 0 ? '-' : '+' }}${{ number_format(abs($tx->amount), 2) }}
                             </td>
 
                         </tr>
@@ -80,7 +76,6 @@
                         <div x-show="show" x-transition class="fixed inset-0 z-50 flex items-center justify-center p-4">
                             <div class="bg-card w-full max-w-md space-y-4 rounded-lg p-6 shadow-lg" x-on:click.stop>
 
-                                {{-- Header --}}
                                 <div class="flex items-center justify-between">
                                     <h2 class="text-lg font-semibold">Transaction Details</h2>
                                     <button x-on:click="show = false" class="text-gray-400 hover:text-gray-500">
@@ -89,7 +84,6 @@
                                 </div>
 
                                 <div class="space-y-2 text-sm">
-
                                     <div>
                                         <span class="text-gray-400">Transaction ID:</span>
                                         <div class="font-medium" x-text="item.id"></div>
@@ -102,7 +96,7 @@
 
                                     <div>
                                         <span class="text-gray-400">Date:</span>
-                                        <div class="font-medium" x-text="item.date"></div>
+                                        <div class="font-medium" x-text="new Date(item.created_at).toLocaleDateString()"></div>
                                     </div>
 
                                     <div>
@@ -115,26 +109,20 @@
 
                                     <div>
                                         <span class="text-gray-400">Description:</span>
-                                        <div class="font-medium" x-text="item.desc"></div>
+                                        <div class="font-medium" x-text="item.description"></div>
                                     </div>
 
                                     <div>
                                         <span class="text-gray-400">Notes:</span>
-                                        <div class="wrap-break-word font-medium" x-text="item.notes"></div>
+                                        <div class="wrap-break-word font-medium" x-text="item.notes || '-'"></div>
                                     </div>
-
                                 </div>
 
                             </div>
                         </div>
-
                     </div>
 
-
                 </table>
-
-
-
 
             </x-card.content>
         </x-card>
