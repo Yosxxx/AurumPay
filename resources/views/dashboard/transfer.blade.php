@@ -30,7 +30,7 @@
                     @csrf
                     <div>
                         <x-label>Recipient Bank ID / Account Number</x-label>
-                        <x-input name="account_number" placeholder="Enter ID" value="{{ old('account_number') }}"></x-input>
+                        <x-input name="account_number" placeholder="Enter ID" value="{{ old('account_number', request('account_number')) }}"></x-input>
                     </div>
                     <div>
                         <x-label>Amount (USD)</x-label>
