@@ -146,7 +146,7 @@
                             {{-- Info --}}
                             <div class="flex-1">
                                 <div class="font-semibold">{{ $item->description }}</div>
-                                <div class="text-muted-foreground text-xs">{{ $item->created_at->format('M d, Y • h:i A') }}</div>
+                                <div class="text-muted-foreground text-xs">{{ $item->created_at->timezone('Asia/Jakarta')->format('M d, Y • h:i A') }}</div>
                             </div>
 
                             {{-- Amount --}}
