@@ -30,7 +30,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard/transfer', function () {
         return view('dashboard.transfer');
-    });
+    })->name('transfer.view');
+
+    Route::post('/dashboard/transfer', [TransactionController::class, 'transfer'])
+        ->name('transfer.post');
 
     Route::get('/dashboard/recipients', [RecipientController::class, 'index'])
         ->name('recipients.index');
