@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <main class="p-10">
+    {{-- RESPONSIVE FIX: p-4 on mobile, p-10 on desktop --}}
+    <main class="p-4 md:p-10">
 
         {{-- Error Handling --}}
         @if ($errors->any())
@@ -20,14 +21,18 @@
             </div>
         @endif
 
-        <div class="space-y-10">
+        <div class="space-y-6 md:space-y-10">
 
             {{-- Balance Card --}}
-            <x-card class="bg-linear-to-br from-primary/20 via-background to-background border-primary/20 space-y-5 p-10">
+            {{-- RESPONSIVE FIX: p-6 on mobile, p-10 on desktop --}}
+            <x-card class="bg-linear-to-br from-primary/20 via-background to-background border-primary/20 space-y-5 p-6 md:p-10">
                 <div class="text-muted-foreground text-xs font-bold">Total Balance</div>
 
                 <div>
-                    <div class="text-4xl font-bold">${{ number_format(auth()->user()->balance, 2) }}</div>
+                    {{-- RESPONSIVE FIX: Smaller text on mobile to prevent wrapping --}}
+                    <div class="text-3xl md:text-4xl font-bold truncate">
+                        ${{ number_format(auth()->user()->balance, 2) }}
+                    </div>
                     <div class="text-muted-foreground text-xs font-bold">Available for transfer</div>
                 </div>
                 
@@ -38,18 +43,25 @@
                     </div>
                 </div>
                 
-                <div class="flex gap-x-2">
-                    <a href="{{ url('/dashboard/transfer') }}">
-                        <x-button>
+                {{-- 
+                    RESPONSIVE FIX: BUTTON GRID
+                    - grid-cols-2: 2x2 layout on Mobile
+                    - md:grid-cols-4: 4-in-a-row on Desktop
+                --}}
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    
+                    {{-- 1. Transfer --}}
+                    <a href="{{ url('/dashboard/transfer') }}" class="block w-full">
+                        <x-button class="w-full justify-center">
                             <x-heroicon-o-paper-airplane class="mr-2 h-5 w-5" />
                             Transfer
                         </x-button>
                     </a>
 
-                    {{-- DEPOSIT DIALOG --}}
+                    {{-- 2. DEPOSIT DIALOG --}}
                     <x-dialog-custom.dialog name="deposit">
-                        <x-dialog-custom.dialog-trigger name="deposit">
-                            <x-button variant="outline">
+                        <x-dialog-custom.dialog-trigger name="deposit" class="w-full">
+                            <x-button variant="outline" class="w-full justify-center">
                                 <x-heroicon-o-arrow-down-tray class="mr-2 h-5 w-5" />
                                 Deposit
                             </x-button>
@@ -64,7 +76,7 @@
                                 
                                 <div class="space-y-2 text-sm">
                                     <x-label>Deposit Amount</x-label>
-                                    <x-input name="amount" type="number" step="0.01" min="1" placeholder="$0.00" required />
+                                    <x-input name="amount" type="number" step="0.01" min="1" placeholder="$0.00" required class="w-full" />
                                 </div>
 
                                 <div class="mt-4 flex justify-end gap-2">
@@ -75,11 +87,10 @@
                         </x-dialog-custom.dialog-content>
                     </x-dialog-custom.dialog>
 
-                    {{-- WITHDRAW DIALOG --}}
+                    {{-- 3. WITHDRAW DIALOG --}}
                     <x-dialog-custom.dialog name="withdraw">
-                        
-                        <x-dialog-custom.dialog-trigger name="withdraw">
-                            <x-button variant="outline">
+                        <x-dialog-custom.dialog-trigger name="withdraw" class="w-full">
+                            <x-button variant="outline" class="w-full justify-center">
                                 <x-heroicon-o-banknotes class="mr-2 h-5 w-5" />
                                 Withdraw
                             </x-button>
@@ -94,7 +105,7 @@
 
                                 <div class="space-y-2 text-sm">
                                     <x-label>Withdraw Amount</x-label>
-                                    <x-input name="amount" type="number" step="0.01" min="1" placeholder="$0.00" required />
+                                    <x-input name="amount" type="number" step="0.01" min="1" placeholder="$0.00" required class="w-full" />
                                 </div>
 
                                 <div class="mt-4 flex justify-end gap-2">
@@ -105,8 +116,9 @@
                         </x-dialog-custom.dialog-content>
                     </x-dialog-custom.dialog>
 
-                    <a href="{{ route('dashboard.qrscan') }}">
-                        <x-button variant="outline">
+                    {{-- 4. Scan QR --}}
+                    <a href="{{ route('dashboard.qrscan') }}" class="block w-full">
+                        <x-button variant="outline" class="w-full justify-center">
                             <x-heroicon-o-qr-code class="mr-2 h-5 w-5" />
                             Scan QR
                         </x-button>
@@ -129,7 +141,7 @@
                     @foreach ($recent as $item)
                         <div class="flex items-center border-b border-white/5 pb-2 last:border-0 last:pb-0">
                             {{-- Icon --}}
-                            <div class="mr-4 rounded-full bg-white/5 p-2">
+                            <div class="mr-4 rounded-full bg-white/5 p-2 shrink-0">
                                 @if ($item->type === 'withdraw')
                                     <x-heroicon-o-arrow-up-right class="h-5 w-5 text-red-500" />
                                 @elseif ($item->type === 'deposit')
@@ -144,13 +156,13 @@
                             </div>
 
                             {{-- Info --}}
-                            <div class="flex-1">
-                                <div class="font-semibold">{{ $item->description }}</div>
+                            <div class="flex-1 min-w-0"> {{-- min-w-0 prevents text overflow --}}
+                                <div class="font-semibold truncate">{{ $item->description }}</div>
                                 <div class="text-muted-foreground text-xs">{{ $item->created_at->timezone('Asia/Jakarta')->format('M d, Y • h:i A') }}</div>
                             </div>
 
                             {{-- Amount --}}
-                            <div class="{{ $item->amount < 0 ? 'text-red-500' : 'text-green-500' }} font-bold font-mono">
+                            <div class="{{ $item->amount < 0 ? 'text-red-500' : 'text-green-500' }} font-bold font-mono ml-2">
                                 {{ ($item->amount < 0 ? '-' : '+') . '$' . number_format(abs($item->amount), 2) }}
                             </div>
                         </div>
