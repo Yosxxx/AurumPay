@@ -16,12 +16,12 @@
                     @csrf
                     <div>
                         <x-label>Email</x-label>
-                        <x-input type="email" placeholder="someone@gmail.com"></x-input>
+                        <x-input name="email" type="email" placeholder="someone@gmail.com"></x-input>
                     </div>
 
                     <div>
                         <x-label>Password</x-label>
-                        <x-input type="password" placeholder="●●●●●●●●"></x-input>
+                        <x-input name="password" type="password" placeholder="●●●●●●●●"></x-input>
                     </div>
                 </form>
             </x-card.content>

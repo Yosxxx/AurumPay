@@ -28,7 +28,6 @@
 
             @if ($tab === 'scan')
                 <x-card.content class="flex flex-col items-center space-y-4 py-10">
-
                     <video id="cameraPreview" autoplay playsinline
                         class="h-[260px] w-[260px] rounded-xl bg-black object-cover"></video>
 
@@ -60,33 +59,68 @@
 
         </x-card>
 
+        <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", () => {
                 const video = document.getElementById("cameraPreview");
                 const toggleBtn = document.getElementById("toggleCamera");
-
+                
                 let stream = null;
                 let isCameraOn = false;
+                let animationFrameId = null;
+
+                // Create a hidden canvas for processing frames
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
 
                 async function startCamera() {
                     try {
                         stream = await navigator.mediaDevices.getUserMedia({
-                            video: {
-                                facingMode: "environment"
-                            }
+                            video: { facingMode: "environment" }
                         });
                         video.srcObject = stream;
+                        video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
+                        video.play();
+                        
                         isCameraOn = true;
                         toggleBtn.textContent = "Disable Camera";
+                        
+                        requestAnimationFrame(tick);
                     } catch (err) {
                         alert("Camera access denied or unavailable.");
                         console.error(err);
                     }
                 }
 
+                function tick() {
+                    if (!isCameraOn || !video) return;
+
+                    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                        canvas.height = video.videoHeight;
+                        canvas.width = video.videoWidth;
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        
+                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                            inversionAttempts: "dontInvert",
+                        });
+
+                        if (code) {
+                            console.log("Found QR code", code.data);
+                            stopCamera();
+                            window.location.href = `/dashboard/transfer?account_number=${encodeURIComponent(code.data)}`;
+                            return;
+                        }
+                    }
+                    animationFrameId = requestAnimationFrame(tick);
+                }
+
                 function stopCamera() {
                     if (stream) {
                         stream.getTracks().forEach(track => track.stop());
+                    }
+                    if (animationFrameId) {
+                        cancelAnimationFrame(animationFrameId);
                     }
                     video.srcObject = null;
                     isCameraOn = false;

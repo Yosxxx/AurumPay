@@ -65,4 +65,56 @@ class TransactionController extends Controller
 
         return back()->with('success', 'Transaction successful.');
     }
+    public function transfer(Request $request)
+    {
+        $request->validate([
+            'account_number' => 'required|string|exists:users,account_number',
+            'amount'         => 'required|numeric|min:1',
+            'notes'          => 'nullable|string|max:255',
+        ]);
+
+        $user = auth()->user();
+        $amount = $request->amount;
+        $recipient = \App\Models\User::where('account_number', $request->account_number)->first();
+
+        if (!$recipient) {
+            return back()->withErrors(['account_number' => 'Recipient not found.']);
+        }
+
+        if ($user->id === $recipient->id) {
+            return back()->withErrors(['account_number' => 'You cannot transfer money to yourself.']);
+        }
+
+        if ($user->balance < $amount) {
+            return back()->withErrors(['amount' => 'Insufficient funds.']);
+        }
+
+        DB::transaction(function () use ($user, $recipient, $amount, $request) {
+            // Deduct from sender
+            $user->decrement('balance', $amount);
+            
+            // Add to recipient
+            $recipient->increment('balance', $amount);
+
+            // Create transaction record for sender
+            \App\Models\Transaction::create([
+                'user_id'     => $user->id,
+                'type'        => 'transfer',
+                'amount'      => -$amount,
+                'description' => 'Transfer to ' . $recipient->name,
+                'notes'       => $request->notes,
+            ]);
+
+            // Create transaction record for recipient
+            \App\Models\Transaction::create([
+                'user_id'     => $recipient->id,
+                'type'        => 'transfer',
+                'amount'      => $amount,
+                'description' => 'Transfer from ' . $user->name,
+                'notes'       => $request->notes,
+            ]);
+        });
+
+        return back()->with('success', 'Transfer successful!');
+    }
 }
