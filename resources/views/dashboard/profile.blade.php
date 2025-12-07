@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    <main class="space-y-5 p-10 mx-auto">
+    {{-- RESPONSIVE FIX: p-4 on mobile, p-10 on desktop. Added w-full and centering. --}}
+    <main class="space-y-5 p-4 md:p-10 mx-auto w-full flex flex-col items-center">
 
         @php
             $user = auth()->user();
@@ -11,15 +12,23 @@
             $initials = strtoupper(substr($firstName, 0, 1) . ($lastName ? substr($lastName, 0, 1) : ''));
         @endphp
 
-        <div class="text-4xl font-bold mx-auto">Account Settings</div>
+        {{-- RESPONSIVE FIX: Smaller text on mobile --}}
+        <div class="text-2xl md:text-4xl font-bold mx-auto">Account Settings</div>
 
         @if (session('success'))
-            <div class="bg-green-500/10 text-green-500 border-green-500/20 border p-4 rounded-md">
+            {{-- Added w-full max-w-2xl so the alert matches the card width --}}
+            <div class="w-full max-w-2xl bg-green-500/10 text-green-500 border-green-500/20 border p-4 rounded-md">
                 {{ session('success') }}
             </div>
         @endif
 
-        <x-card class="min-w-2xl">
+        {{-- 
+            RESPONSIVE FIX: 
+            w-full: Takes up 100% of the screen on phones
+            max-w-2xl: Stops getting wider than 2xl on computers
+            (Replaces min-w-2xl)
+        --}}
+        <x-card class="w-full max-w-2xl">
 
             <x-card.header class="space-y-2">
 
@@ -38,15 +47,16 @@
                     @csrf
 
                     {{-- Name Fields --}}
-                    <div class="flex gap-x-5">
+                    {{-- RESPONSIVE FIX: Stack vertically on mobile (flex-col), side-by-side on desktop (md:flex-row) --}}
+                    <div class="flex flex-col md:flex-row gap-5">
                         <div class="flex-1">
                             <x-label>First Name</x-label>
-                            <x-input name="first_name" value="{{ $firstName }}" required />
+                            <x-input name="first_name" value="{{ $firstName }}" required class="w-full" />
                         </div>
 
                         <div class="flex-1">
                             <x-label>Last Name</x-label>
-                            <x-input name="last_name" value="{{ $lastName }}" required />
+                            <x-input name="last_name" value="{{ $lastName }}" required class="w-full" />
                         </div>
                     </div>
                     
@@ -56,20 +66,21 @@
                         <x-input 
                             value="{{ $user->account_number }}" 
                             readonly 
-                            class="bg-white/10 text-gray-400 cursor-not-allowed border-dashed" 
+                            class="bg-white/10 text-gray-400 cursor-not-allowed border-dashed w-full" 
                         />
                         <p class="text-[10px] text-gray-500 mt-1">Unique identifier for receiving funds.</p>
                     </div>
+
                     {{-- Email --}}
                     <div>
                         <x-label>Email</x-label>
-                        <x-input name="email" type="email" value="{{ $user->email }}" required />
+                        <x-input name="email" type="email" value="{{ $user->email }}" required class="w-full" />
                     </div>
 
                     {{-- New Password --}}
                     <div>
                         <x-label>New Password (Leave blank to keep current)</x-label>
-                        <x-input name="password" type="password" placeholder="Enter a new password" />
+                        <x-input name="password" type="password" placeholder="Enter a new password" class="w-full" />
                     </div>
 
                     <x-button type="submit" class="w-full">Save Changes</x-button>
