@@ -48,4 +48,11 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/dashboard/profile', [ProfileController::class, 'update'])
         ->name('profile.update');
+
+    Route::post('/dashboard/recipients', [RecipientController::class, 'store'])
+        ->name('recipients.store');
+
+    Route::post('/dashboard/recipients/verify', [RecipientController::class, 'verify'])
+        ->name('recipients.verify');
+    
 });

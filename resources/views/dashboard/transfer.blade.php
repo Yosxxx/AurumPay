@@ -6,14 +6,14 @@
         <x-card class="min-w-2xl">
             <x-card.header>
                 <x-card.title>Transaction Details</x-card.title>
-                <x-card.description>Enter the recipient's details securely.</x-card.descrption>
+                <x-card.description>Enter the recipient's details securely.</x-card.description>
             </x-card.header>
 
             <x-card.content>
                 <form action="" class="space-y-5">
                     <div>
                         <x-label>Recipient Bank ID / Account Number</x-label>
-                        <x-input  placeholder="Enter ID"></x-input>
+                        <x-input name="account_number" placeholder="Enter ID" value="{{ request('account_number') }}"></x-input>
                     </div>
                     <div>
                         <x-label>Amount (USD)</x-label>
