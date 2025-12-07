@@ -3,10 +3,11 @@
 @section('content')
     <main class="space-y-5 p-10 mx-auto">
         <div class="text-4xl font-bold mx-auto">Transfer Money</div>
+        
         <x-card class="min-w-2xl">
             <x-card.header>
                 <x-card.title>Transaction Details</x-card.title>
-                <x-card.description>Enter the recipient's details securely.</x-card.descrption>
+                <x-card.description>Enter the recipient's details securely.</x-card.description>
             </x-card.header>
 
             <x-card.content>
@@ -28,18 +29,36 @@
 
                 <form action="{{ route('transfer.post') }}" method="POST" class="space-y-5">
                     @csrf
+                    
                     <div>
                         <x-label>Recipient Bank ID / Account Number</x-label>
-                        <x-input name="account_number" placeholder="Enter ID" value="{{ old('account_number', request('account_number')) }}"></x-input>
+                        <x-input 
+                            name="account_number" 
+                            placeholder="Enter ID" 
+                            value="{{ old('account_number', request('account_number')) }}"
+                        ></x-input>
                     </div>
+
                     <div>
                         <x-label>Amount (USD)</x-label>
-                        <x-input name="amount" type="number" step="0.01" placeholder="$ 0.00" value="{{ old('amount') }}"></x-input>
+                        <x-input 
+                            name="amount" 
+                            type="number" 
+                            step="0.01" 
+                            placeholder="$ 0.00" 
+                            value="{{ old('amount') }}"
+                        ></x-input>
                     </div>
+
                     <div>
                         <x-label>Note (Optional)</x-label>
-                        <x-input name="notes" placeholder="For Dinner, Rent, etc." value="{{ old('notes') }}"></x-input>
+                        <x-input 
+                            name="notes" 
+                            placeholder="For Dinner, Rent, etc." 
+                            value="{{ old('notes') }}"
+                        ></x-input>
                     </div>
+
                     <x-button type="submit" class="w-full">Send Money</x-button>
                 </form>
             </x-card.content>

@@ -2,37 +2,81 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Recipient;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 class RecipientController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $dummy = collect([
-            ['name' => 'Ethan Clarke', 'number' => '321-889-112'],
-            ['name' => 'Maya Thompson', 'number' => '554-210-998'],
-            ['name' => 'Lucas Bennett', 'number' => '778-442-310'],
-            ['name' => 'Ariana Hughes', 'number' => '992-631-407'],
-            ['name' => 'Dylan Carter', 'number' => '110-743-558'],
-            ['name' => 'Olivia Brooks', 'number' => '643-220-918'],
-            ['name' => 'Noah Ramirez', 'number' => '984-551-733'],
-            ['name' => 'Chloe Adams', 'number' => '227-119-674'],
-            ['name' => 'Isaac Morgan', 'number' => '875-330-441'],
-            ['name' => 'Sophia Turner', 'number' => '441-982-300'],
-            ['name' => 'Nathan Price', 'number' => '219-450-780'],
-            ['name' => 'Emma Foster', 'number' => '552-118-907'],
-            ['name' => 'Caleb Knight', 'number' => '803-771-299'],
-            ['name' => 'Bella Crawford', 'number' => '119-664-882'],
-            ['name' => 'Henry Sullivan', 'number' => '330-907-655'],
-        ]);
+        $userId = Auth::id();
+        $query = Recipient::where('user_id', $userId);
 
-        // Paginate 12 per page
-        $recipients = new \Illuminate\Pagination\LengthAwarePaginator(
-            $dummy->forPage(request('page', 1), 12),
-            $dummy->count(),
-            12,
-            request('page', 1),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        if($request->has('search') && $request->search !=''){
+            $search = $request->search;
+            $query->where(function($q) use ($search){
+                $q->where('recipient_name', 'like', "%{$search}%")
+                ->orWhere('recipient_account_number', 'like', "%{$search}%");
+            });
+        }
+
+        $recipients = $query->latest()->paginate(10);
 
         return view('dashboard.recipients', compact('recipients'));
     }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'account_number' => 'required|exists:users,account_number',
+            'name' => 'required|string|max:255'
+        ]);
+
+        if($request->account_number == Auth::user()->account_number){
+            return back()->witherrors(['account_number' => 'You cannot add yourself as a recipient.']);
+        }
+
+        $exists = Recipient::where('user_id', Auth::id())
+            ->where('recipient_account_number', $request->account_number)
+            ->exists();
+
+        if($exists){
+            return back()->withErrors(['account_number' => 'This recipient is already in your list.']);
+        }
+
+        Recipient::create([
+            'user_id' => Auth::id(),
+            'recipient_account_number' => $request->account_number,
+            'recipient_name' => $request->name,
+        ]);
+
+        
+
+        return redirect()->back()->with('success', 'Recipient added successfully!');
+    }
+
+    public function verify(Request $request){
+        $user = User::where('account_number', $request->account_number)->first();
+
+        if(!$user){
+            return response()->json(['status' => 'error', 'message' => 'Account not found.']);
+        }
+
+        if($user->id == Auth::id()){
+            return response()->json(['status' => 'error', 'message' => 'You cannot add yourself!']);
+        }
+
+        $exists = Recipient::where('user_id', Auth::id())
+            ->where('recipient_account_number', $request->account_number)
+            ->exists();
+
+        if($exists){
+            return response()->json(['status' => 'error', 'message' => 'This Recipient is already in your list.']);
+        }
+
+        return response()->json(['status' => 'success', 'name' => $user->name]);
+    }
+
 }
